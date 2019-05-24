@@ -39,7 +39,7 @@ child.expect('STATUS::Login succeed')
 child.logfile = sys.stdout
 child.expect('STATUS::Tunnel running')
 
-route_add = 'sudo route add -net 172.16.4.0 netmask 255.255.254.0 dev ppp0'
+route_add = 'sudo route add -net 0.0.0.0 netmask 255.255.254.0 dev ppp0'
 print route_add
 pexpect.run(route_add)
 
