@@ -1,0 +1,10 @@
+{
+	"server": "0.0.0.0:0",
+	"vpnuser": "user",
+	"vpnpassword": "password",
+	"email": "example@example.com",
+	"emailpassword": "password",
+	"popserver": "outlook.office365.com",
+	"port": 995,
+	"route": "sudo route add -net 0.0.0.0 netmask 255.255.254.0 dev ppp0"
+}
