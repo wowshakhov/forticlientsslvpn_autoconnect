@@ -15,6 +15,7 @@ email = config.get('email')
 emailpassword = config.get('emailpassword')
 popserver = config.get('popserver')
 port = config.get('port')
+route = config.get('route')
 
 child = pexpect.spawn('./forticlientsslvpn_cli --server {} --vpnuser {}'.format(server, vpnuser))
 child.expect('Password for VPN:')
@@ -39,8 +40,7 @@ child.expect('STATUS::Login succeed')
 child.logfile = sys.stdout
 child.expect('STATUS::Tunnel running')
 
-route_add = 'sudo route add -net 0.0.0.0 netmask 255.255.254.0 dev ppp0'
-print route_add
-pexpect.run(route_add)
+print route
+pexpect.run(route)
 
 child.interact()
