@@ -5,6 +5,9 @@ install:
 - pip install pyinstaller
 script:
 - pyinstaller --onefile forticlientsslvpn_autoconnect.py
+- ls
+- cd dist
+- ls
 deploy:
   provider: releases
   overwrite: true
