@@ -1,18 +1,14 @@
 language: python
-
 python:
-  - "2.7"
-
+- '2.7'
 install:
-  - pip install pyinstaller
-
+- pip install pyinstaller
 script:
-  - pyinstaller --onefile forticlientsslvpn_autoconnect.py
-
+- pyinstaller --onefile forticlientsslvpn_autoconnect.py
 deploy:
   provider: releases
-  api_key: $TOKEN
-  file: "forticlientsslvpn_autoconnect"
-  skip_cleanup: true
+  api_key:
+    secure: hL2NlTK/8xwn3cVgXAfXqR8LkyHesHdKdzwC2/AMSm7wM429bl8W3mpjG9LhSOaszoeStR53V7QoLjp5ig9S8DWJoLDXDWnF8ZRkeak/mnGrOapwN/S7NZ3A3Q6ZiRSIIgxf0+YhNq5tqwaLh+ArO/tYMTVv+b53fbGPymGFO3jzUJvvioN67qOerd404/U2fvlzAu/xXCZS7zkVNhdEVjxpR5LkIiX6w0xfoEfkNDfoC+JwVzp18MVgvL4ewbnBI4V3l1FRlVef8N0cHkha5AVfEBAl1qTDrNS8dUBm6Zttq5RB5Os5RAcVnw7UPylATVh1VHxdwPXqdIntSXyt4C2zOgaoHKEFkGa5SM0HwrqalLwVdk5NeVvquRYqveSe6Z/EeP8Z5DDMuBHEowjbt1FyQLp5sutx4wAdoYT2hTfZf5ydqtUpiw/ny5aAjrCP0/Feuj44BuV0IocYAsPAJQ6YtQgS3SCSoZPtFaFU769jz6sdLJGDrdb7CVcDgge/dKMVJHiBWoXOU6Yk10MLWIAIt5++tfxel4HIbNR679cqx3V93hUcl3T1Dc88DCPLl5yO803Yb1gW5lvdaKJetSFgVaSrY0tFtyIcLWN8fDygSKol8vJBKvcbpGDmWbuh0F8Y5QXzaVHPkj3goKRBeSuqzTG8rZ40Y269oqwEpFA=
+  file: "dist/forticlientsslvpn_autoconnect"
   on:
-    tags: false
+    repo: wowshakhov/forticlientsslvpn_autoconnect
