@@ -4,6 +4,7 @@ python:
 install:
   - pip install pyinstaller
 script:
+  - pip install -r requirements.txt
   - pyinstaller --onefile forticlientsslvpn_autoconnect.py
 
 before_deploy:
