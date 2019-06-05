@@ -7,7 +7,7 @@ script:
 - pyinstaller --onefile forticlientsslvpn_autoconnect.py
 
 before_deploy:
-- export TRAVIS_TAG=${TRAVIS_TAG:-$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)}
+- export TRAVIS_TAG=${TRAVIS_TAG:-$(date +'%Y%m%d%H%M%S')}
 - git tag $TRAVIS_TAG
 
 deploy:
