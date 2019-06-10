@@ -35,10 +35,10 @@ def connectToPOPServer():
     return connection
 
 def extractAuthCode(popConnection):
-    lines = popConnection.retr(len(M.list()[1]))[1] # last message
+    lines = popConnection.retr(len(popConnection.list()[1]))[1] # last message
     msg_content = b'\r\n'.join(lines).decode('utf-8')
     msg = Parser().parsestr(msg_content)
-    code = msg.get_payload(decode=True)[34:40] # extract 6 digit code
+    return msg.get_payload(decode=True)[34:40] # extract 6 digit code
 
 def enterAuthCode(forticlient, code):
     forticlient.sendline(code)
@@ -46,7 +46,7 @@ def enterAuthCode(forticlient, code):
     forticlient.logfile = sys.stdout
     forticlient.expect('STATUS::Tunnel running')
 
-def setupStaticRoute():
+def setupStaticRoute(route):
     print route
     pexpect.run(route)
 
@@ -59,6 +59,6 @@ waitForAuthCodeEmail()
 code = extractAuthCode(connectToPOPServer())
 enterAuthCode(forticlient, code)
 
-setupStaticRoute()
+setupStaticRoute(route)
 
 forticlient.interact()
