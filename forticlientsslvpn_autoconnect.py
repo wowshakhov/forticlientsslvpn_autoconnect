@@ -17,7 +17,7 @@ popserver = config.get('popserver')
 port = config.get('port')
 route = config.get('route')
 
-def loginToVPN(forticlient):
+def login_to_vpn(forticlient):
     forticlient.expect('Password for VPN:')
     forticlient.sendline(vpnpassword)
     forticlient.expect('Would you like to connect to this server')
@@ -25,40 +25,40 @@ def loginToVPN(forticlient):
     forticlient.expect('An email message containing a Token Code')
     print 'Login successful. Waiting for email...'
 
-def waitForAuthCodeEmail():
+def wait_for_auth_code_email():
     time.sleep(10)
 
-def connectToPOPServer():
+def connect_to_pop_server():
     connection = poplib.POP3_SSL(popserver)
     connection.user(email)
     connection.pass_(emailpassword)
     return connection
 
-def extractAuthCode(popConnection):
-    lines = popConnection.retr(len(popConnection.list()[1]))[1] # last message
+def extract_auth_code(pop_connection):
+    lines = pop_connection.retr(len(pop_connection.list()[1]))[1] # last message
     msg_content = b'\r\n'.join(lines).decode('utf-8')
     msg = Parser().parsestr(msg_content)
     return msg.get_payload(decode=True)[34:40] # extract 6 digit code
 
-def enterAuthCode(forticlient, code):
+def enter_auth_code(forticlient, code):
     forticlient.sendline(code)
     forticlient.expect('STATUS::Login succeed')
     forticlient.logfile = sys.stdout
     forticlient.expect('STATUS::Tunnel running')
 
-def setupStaticRoute(route):
+def setup_static_route(route):
     print route
     pexpect.run(route)
 
 
 forticlient = pexpect.spawn('./forticlientsslvpn_cli --server {} --vpnuser {}'.format(server, vpnuser))
 
-loginToVPN(forticlient)
+login_to_vpn(forticlient)
 
-waitForAuthCodeEmail()
-code = extractAuthCode(connectToPOPServer())
-enterAuthCode(forticlient, code)
+wait_for_auth_code_email()
+code = extract_auth_code(connect_to_pop_server())
+enter_auth_code(forticlient, code)
 
-setupStaticRoute(route)
+setup_static_route(route)
 
 forticlient.interact()
