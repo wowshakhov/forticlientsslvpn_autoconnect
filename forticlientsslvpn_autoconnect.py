@@ -3,6 +3,7 @@ import pexpect
 import time
 import sys
 import json
+import re
 from email.parser import Parser
 
 with open('config.json') as config_file:
@@ -23,7 +24,7 @@ def login_to_vpn(forticlient):
     forticlient.expect('Would you like to connect to this server')
     forticlient.sendline('Y')
     forticlient.expect('An email message containing a Token Code')
-    print 'Login successful. Waiting for email...'
+    print 'Login successful. Waiting for auth code email...\n'
 
 def wait_for_auth_code_email():
     time.sleep(10)
@@ -34,11 +35,26 @@ def connect_to_pop_server():
     connection.pass_(emailpassword)
     return connection
 
-def extract_auth_code(pop_connection):
-    lines = pop_connection.retr(len(pop_connection.list()[1]))[1] # last message
-    msg_content = b'\r\n'.join(lines).decode('utf-8')
-    msg = Parser().parsestr(msg_content)
-    return msg.get_payload(decode=True)[34:40] # extract 6 digit code
+def extract_auth_code_from_msg(msg):
+    subject = msg.get('Subject')
+    match = re.search('AuthCode: (\d{6})', subject)
+
+    return match.group(1) if match else None
+
+def get_auth_code(pop_connection):
+    _, messages, __ = pop_connection.list()
+    messages_len = len(messages)
+
+    for i in xrange(messages_len, messages_len - 4, -1):
+        _, lines, __ = pop_connection.retr(i)
+        msg_content = b'\r\n'.join(lines).decode('utf-8')
+        msg = Parser().parsestr(msg_content)
+
+        code = extract_auth_code_from_msg(msg)
+        if code != None:
+            return code
+
+    return None
 
 def enter_auth_code(forticlient, code):
     forticlient.sendline(code)
@@ -47,7 +63,7 @@ def enter_auth_code(forticlient, code):
     forticlient.expect('STATUS::Tunnel running')
 
 def setup_static_route(route):
-    print route
+    print "Adding static route...:", route
     pexpect.run(route)
 
 
@@ -56,7 +72,7 @@ forticlient = pexpect.spawn('./forticlientsslvpn_cli --server {} --vpnuser {}'.f
 login_to_vpn(forticlient)
 
 wait_for_auth_code_email()
-code = extract_auth_code(connect_to_pop_server())
+code = get_auth_code(connect_to_pop_server())
 enter_auth_code(forticlient, code)
 
 setup_static_route(route)
