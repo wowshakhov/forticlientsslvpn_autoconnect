@@ -73,9 +73,10 @@ forticlient = pexpect.spawn('./forticlientsslvpn_cli --server {} --vpnuser {}'.f
 
 login_to_vpn(forticlient)
 
-wait_for_auth_code_email()
-code = get_auth_code(connect_to_pop_server())
-enter_auth_code(forticlient, code)
+if email:
+    wait_for_auth_code_email()
+    code = get_auth_code(connect_to_pop_server())
+    enter_auth_code(forticlient, code)
 
 setup_static_route(route)
 
