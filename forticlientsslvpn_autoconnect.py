@@ -6,7 +6,9 @@ import json
 import re
 from email.parser import Parser
 
-with open('config.json') as config_file:
+config_name = 'config.json' if len(sys.argv) == 1 else sys.argv[1]
+
+with open(config_name) as config_file:
     config = json.load(config_file)
 
 server = config.get('server')
