@@ -25,9 +25,11 @@ def login_to_vpn(forticlient):
     forticlient.sendline(vpnpassword)
     forticlient.expect('Would you like to connect to this server')
     forticlient.sendline('Y')
+
+def expect_auth_code_email(forticlient):
     forticlient.expect('An email message containing a Token Code')
     print 'Login successful. Waiting for auth code email...\n'
-
+        
 def wait_for_auth_code_email():
     time.sleep(10)
 
@@ -60,6 +62,9 @@ def get_auth_code(pop_connection):
 
 def enter_auth_code(forticlient, code):
     forticlient.sendline(code)
+
+
+def await_connection(forticlient):
     forticlient.expect('STATUS::Login succeed')
     forticlient.logfile = sys.stdout
     forticlient.expect('STATUS::Tunnel running')
@@ -68,16 +73,16 @@ def setup_static_route(route):
     print "Adding static route...:", route
     pexpect.run(route)
 
-
 forticlient = pexpect.spawn('./forticlientsslvpn_cli --server {} --vpnuser {}'.format(server, vpnuser))
 
 login_to_vpn(forticlient)
 
 if email:
+    expect_auth_code_email(forticlient)
     wait_for_auth_code_email()
     code = get_auth_code(connect_to_pop_server())
     enter_auth_code(forticlient, code)
 
+await_connection(forticlient)
 setup_static_route(route)
-
 forticlient.interact()
